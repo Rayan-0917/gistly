@@ -6,7 +6,7 @@ import Hero from './components/Hero.jsx'
 import SummaryCard from './components/SummaryCard.jsx'
 import RelatedArticles from './components/RelatedArticles.jsx'
 import Sidebar from './components/Sidebar.jsx';
-import { ArrowUp, Link2 } from 'lucide-react'
+import { ArrowUp, Link2, Menu } from 'lucide-react'
 
 
 const App = () => {
@@ -14,6 +14,7 @@ const App = () => {
   const [articleUrl, setArticleUrl]=useState('');
   const [summaryData, setSummaryData]=useState({summary: '', related: [] });
   const [history, setHistory]=useState([]);
+  const [isSidebarOpen, setIsSidebarOpen]=useState(false);
 
   const [getSummary, {isFetching: fetchingSummary, error: summaryError}] = useLazyGetSummaryQuery();
   const [getRelated, {isFetching: fetchingNews}]=useLazyGetRelatedArticlesQuery();
@@ -39,7 +40,7 @@ const App = () => {
     const {data}=await getSummary({articleUrl});
 
     if(data?.summary){
-      const query=data.summary.split(' ').slice(0, 4).join(' ');
+      const query=data.summary.split(' ').slice(0, 3).join(' ');
       const newsResult=await getRelated(query);
 
       const newEntry={
@@ -81,9 +82,18 @@ const App = () => {
   };
 
   return (
-    <main className='min-h-screen bg-slate-800 font-satoshi flex flex-col md:flex-row'>
-      <Sidebar history={history} onSelect={handleSelectHistory} onDelete={handleDeleteItem} onClearAll={handleClearAll}/>
-      <div className='flex-1 max-h-screen overflow-y-auto'>
+    <main className='min-h-screen bg-slate-800 font-satoshi flex flex-col md:flex-row relative'>
+      {!isSidebarOpen && (
+        <button onClick={()=>setIsSidebarOpen(true)} className='fixed top-5 left-5 z-50 p-2 bg-slate-700 border border-slate-600 rounded-lg text-white md:flex items-center gap-2 hover:bg-slate-600 transition-all'>
+          <Menu size={20}/>
+        </button>
+      )}
+      <Sidebar history={history} onSelect={handleSelectHistory} onDelete={handleDeleteItem} onClearAll={handleClearAll} isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen}/>
+
+      {isSidebarOpen && (
+        <div className='fixed inset-0 bg-black/50 z-30 md:hidden' onClick={()=>setIsSidebarOpen(false)}></div>
+      )}
+      <div className={`flex-1 max-h-screen overflow-y-auto transition-all duration-300 ${isSidebarOpen ? 'md:ml-0' : 'md:ml-0'}`}>
         <div className='max-w-4xl mx-auto flex flex-col items-center px-6'>
         <Navbar/>
         <Hero/>

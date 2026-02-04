@@ -1,15 +1,15 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-const newsApiKey=import.meta.env.VITE_NEWS_API_KEY;
+const gnewsApiKey=import.meta.env.VITE_GNEWS_API_KEY;
 
 export const newsApi=createApi({
     reducerPath: 'newsApi',
     baseQuery: fetchBaseQuery({
-        baseUrl: 'https://newsapi.org/v2/',
+        baseUrl: 'https://gnews.io/api/v4/',
     }),
     endpoints: (builder)=>({
         getRelatedArticles: builder.query({
-            query: (searchTerm)=> `everything?q=${encodeURIComponent(searchTerm)}&apiKey=${newsApiKey}&pageSize=4&language=en`
+            query: (searchTerm)=> `search?q=${encodeURIComponent(searchTerm)}&lang=en&max=4&apikey=${gnewsApiKey}`,
         }),
     }),
 });

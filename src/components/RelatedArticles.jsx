@@ -16,11 +16,11 @@ const RelatedArticles = ({articles, isFetching}) => {
       <div className='grid grid-cols-1 sm:grid-cols-2 gap-6'>
         {articles.map((article, i)=>(
             <a key={i} href={article.url} target='blank' rel="noreferrer" className='group block bg-white border border-slate-100 p-4 rounded-xl hover:shadow-lg transition-all'>
-                {article.urlToImage && (
-                    <img src={article.urlToImage} alt="news" className='w-full h-32 object-cover rounded-lg mb-3'/>
+                {(article.image || article.urlToImage) && (
+                    <img src={article.image || article.urlToImage} alt="news" className='w-full h-32 object-cover rounded-lg mb-3'/>
                 )}
                 <p className='text-[10px] font-bold text-blue-600 uppercase tracking-widest mb-1'>
-                    {article.source.name}
+                    {article.source?.name || 'News'}
                 </p>
                 <h4 className='font-bold text-slate-900 line-clamp-2 group-hover:text-blue-600'>
                     {article.title}
